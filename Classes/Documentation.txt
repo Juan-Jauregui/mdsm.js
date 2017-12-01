@@ -1,0 +1,152 @@
+mdsm.init(config) Schema:
+	{
+		"title" : "initConfig",
+		"description" : "MDSM Initialization Configuration Object",
+		"type" : "object",
+		"properties" : {
+			"mode" : {
+				"description": "A string indicating the mode that the framework will run in."
+				"type" "string",
+				"acceptable values": {"Port","Middleware"}
+			},
+			"port" : {
+				"description" : "The port number on which the server will listen for request",
+				"type" : "integer"
+				"optional" : true (but required if mode == "Port")
+			},
+			"endpoints":{
+				"description" : "An array of Endpoint objects",
+				"type" : "array",
+				"items": {
+					"description": "An Endpoint object"
+					"type": "object",
+					"parameters": "See Endpoint schema"
+				}
+			},
+			"https":{
+				"description":"Configuration for HTTPS (Optional)",
+				"type":"object",
+				"properties": {
+					"httpsEnabled" : {
+						"description": "Flags whether HTTPS should be used or not",
+						"type" : "boolean"
+					},
+					"key" : {
+						"description": "SSL Key",
+						"type" : "string"
+					},
+					"cert" : {
+						"description": "SSL certificate",
+						"type" : "string"
+					},
+					"passphrase" : {
+						"description": "SSL passphrase",
+						"type" : "string"
+					},
+					"ca" : {
+						"description": "SSL Certificate Authority (Optional)",
+						"type" : "string"
+					},
+				},
+				"required" : ["httpsEnabled", "key", "cert"]
+			}
+		}
+	}
+
+
+Endpoint: {
+	"title" : "Endpoint",
+	"description" : "Defines an MDSM endpoint",
+	"type" : "object",
+	"properties" : {
+		"url": {
+			"description": "The url for the endpoint",
+			"type": "string"
+		},
+		"allowedClassTypes": {
+			"description": "list of client classes allowed to access the endpoint",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"handler": {
+			"description": "A handler function for the endpoint",
+			"type": "function",
+			"parameters": {
+				"sessionData": {
+					"description": "MDSM will provide the sessionData object for the pertinent session"
+					"type": "object"
+				},
+				"clientData": {
+					"description": "MDSM will provide the clientData object for the client who made the request"
+				},
+				"clientData": {
+					"description": "MDSM will provide the clientData object for the client who made the request"
+					"type": "object"
+				},
+				"request", "response" : {
+					"description": "Standard request and response Node.js objects",
+					"type": "object"
+				}
+				"mdsmCookie": {
+					"description": "A decrypted MDSM cookie",
+					"type": "object",
+					"parameters": {
+						"sessionID": {
+							"description": "The sessionID associated with the client who made the request",
+							"type": "string"
+						},
+						"clientID": {
+							"description": "The clientID of the client who made the request",
+							"type": "string"
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+mdsm.createSession(newSessionInfo) newSessionInfo Schema:
+{
+	"title" : "newSessionInfo",
+	"description" : "MDSM New Session Configuration Object",
+	"type" : "object",
+	"properties" : {
+		"sessionID":{
+			"description" : "An ostensibly unique identifier for the session. Optional: If not provided, a 32-bit hex-encoded random value will be used.",
+			"type" : "string"
+			"Optional" : true
+		},
+		"timeToLive":{
+			"description": "The valid length of the session in milliseconds. Note that sessions may be extended beyond their initial TTL. See Session documentation.",
+			"type": "number"
+		},
+		"sessionData":{
+			"description": "An object containing arbitrary data (including functions)",
+			"type": "object"
+		}
+	}
+}
+
+mdsm.addClient(newClientInfo) newClientInfo Schema:
+{
+	"title": "newClientInfo",
+	"description": "An object containing the parameters to create a new Client object",
+	"type": "object",
+	"properties": {
+		"session": {
+			"description": "Either a Session instance, or a sessionID",
+			"type": "object (instance of Session) or String (if using a sessionID)"
+		},
+		"clientClass": {
+			"description" "The class of the object to be added. Used to determine endpoint privileges.",
+			"type": "string"
+		},
+		"clientData": {
+		"description": "An object containing arbitrary data (including functions)",
+		"type": "object"
+		}
+	}
+}

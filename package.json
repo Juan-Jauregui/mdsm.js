@@ -1,0 +1,11 @@
+{
+  "name": "mdms",
+  "version": "1.0.0",
+  "description": "A multi-device state management framework for networked applications",
+  "main": "mdsm.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Juan Jauregui",
+  "license": "GPL-3.0"
+}
