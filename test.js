@@ -49,9 +49,15 @@ let processRequest = function(req,res){
 					sessionData: {'bar':'baz'}
 				};
 				let newSesh = mdsm.createSession(newSessionInfo);
+				let theSessionID = newSesh.sessionID;
 
+				// console.log("New session created:" );
+				// console.log(newSesh);
+				// console.log("New session's ID is " + newSesh.sessionID);
+				
 				let clientCookie = mdsm.addClient({
-					session: newSesh,
+					// session: newSesh,
+					session: theSessionID,
 					clientClass: 'class_A',
 					clientData: {'foo':'bar'},
 				});

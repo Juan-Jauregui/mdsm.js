@@ -326,18 +326,31 @@ let mdsm = function(){
 		session.extendSessionLife(extraTimeInMs);
 	}
 
-	/* Add a client based on info passed in. See documentation for newClientInfo schema. */
+	/* Add a client based on info passed in. See documentation for newClientInfo schema.
+	 * Returns either the new client's encrypted cookie, or null if the client could not
+	 * be created. */
 	let addClient = function(newClientInfo){
+		console.log("Trying to create a client on session " + newClientInfo.session);
+		console.log("Sessions: ");
+		console.log(sessions);
 		/* get the session from the newClientinfo */
-		let session = newClientInfo.session;
+		var session;// = newClientInfo.session;
 
 		/* If Session was passed in as a sessionID instead of a Session object, get the
 		 * appropriate object from the list of sessions. */
-		if(!(typeof session === 'object')){
+		if(!(typeof newClientInfo.session === 'object')){
 			session = sessions.filter((s)=>{
-				return s.sessionID === sessionDataObject.sessionID;
+				return s.sessionID === newClientInfo.session;
 			})[0];
+
+			/* If the session could not be found, return null */
+			if(!(session)){
+				return null;
+			}
 		}
+
+		/* If the Session instance was passed directly, just use it. */
+		else session = newClientInfo.session;
 
 		/* Tell the session to create a new client, which returns a client cookie */
 		let clientCookie = session.addClient({
